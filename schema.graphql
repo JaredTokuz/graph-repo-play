@@ -1,6 +1,36 @@
-type Gravatar @entity {
-  id: ID!
-  owner: Bytes!
-  displayName: String!
-  imageUrl: String!
+enum TradeType {
+  Mint
+  Burn
+}
+
+type TokenTrade @entity(immutable: true) {
+  id: Bytes!
+  nonce: BigInt!
+  er20Amount: BigInt!
+  ethAmount: BigInt!
+  timestamp: BigInt!
+  tradeType: TradeType!
+  address: String!
+}
+
+type AddressProfile {
+  id: Bytes!
+  address: String!
+  erc20Purchased: BigInt!
+  erc20Sold: BigInt!
+  weiSpent: BigInt!
+  weiSold: Bigint!
+  weiNetRealized: BigInt!
+  noTrades: BigInt!
+}
+
+type LatestTokenState {
+  id: String!
+  last_timestamp: BigInt!
+  last_nonce: BigInt!
+  price: BigInt!
+  weiSpent: BigInt!
+  weiWithdrawn: BigInt!
+  noAddress: BigInt!
+  noTrades: BigInt!
 }

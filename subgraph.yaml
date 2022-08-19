@@ -1,27 +1,28 @@
-specVersion: 0.0.2
-description: Gravatar for Ethereum
-repository: https://github.com/graphprotocol/example-subgraph
+specVersion: 0.0.4
+description: Simple Bonding Curve showcase
+repository: https://github.com/JaredTokuz/nft-bonding-curve
 schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: Gravity
+    name: SimpleBondingCurve
     network: mainnet
     source:
-      address: '0x2E645469f354BB4F5c8a05B3b30A929361cf77eC'
-      abi: Gravity
+      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+      abi: SimpleBondingCurve
+      startBlock: 1
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - Gravatar
+        - TokenTrade
       abis:
-        - name: Gravity
-          file: ./abis/Gravity.json
+        - name: SimpleBondingCurve
+          file: ./abis/SimpleBondingCurve.json
       eventHandlers:
-        - event: NewGravatar(uint256,address,string,string)
-          handler: handleNewGravatar
-        - event: UpdatedGravatar(uint256,address,string,string)
-          handler: handleUpdatedGravatar
+        - event: LogMint(uint256,uint256)
+          handler: handleMintEvent
+        - event: LogWithdraw(uint256,uint256)
+          handler: handleWithdrawEvent
       file: ./src/mapping.ts
