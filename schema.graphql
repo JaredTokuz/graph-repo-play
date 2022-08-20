@@ -13,18 +13,18 @@ type TokenTrade @entity(immutable: true) {
   address: String!
 }
 
-type AddressProfile @entity {
+type AddressProfile @entity(immutable: false) {
   id: Bytes!
   address: String!
   erc20Purchased: BigInt!
   erc20Sold: BigInt!
   weiSpent: BigInt!
-  weiSold: Bigint!
+  weiSold: BigInt!
   weiNetRealized: BigInt!
   noTrades: BigInt!
 }
 
-type LatestTokenState @entity {
+type LatestTokenState @entity(immutable: false) {
   id: String!
   last_timestamp: BigInt!
   last_nonce: BigInt!
