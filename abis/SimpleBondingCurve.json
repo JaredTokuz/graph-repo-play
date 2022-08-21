@@ -35,55 +35,23 @@
       {
         "indexed": false,
         "internalType": "string",
-        "name": "logString",
+        "name": "side",
         "type": "string"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "value",
-        "type": "uint256"
-      }
-    ],
-    "name": "LogBondingCurve",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amountMinted",
+        "name": "weiAmt",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "totalCost",
+        "name": "erc20Amt",
         "type": "uint256"
       }
     ],
-    "name": "LogMint",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amountWithdrawn",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "reward",
-        "type": "uint256"
-      }
-    ],
-    "name": "LogWithdraw",
+    "name": "LogTrade",
     "type": "event"
   },
   {

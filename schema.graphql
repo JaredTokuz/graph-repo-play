@@ -6,7 +6,7 @@ enum TradeType {
 type TokenTrade @entity(immutable: true) {
   id: Bytes!
   nonce: BigInt!
-  er20Amount: BigInt!
+  erc20Amount: BigInt!
   ethAmount: BigInt!
   timestamp: BigInt!
   tradeType: TradeType!

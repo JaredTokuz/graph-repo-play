@@ -21,8 +21,6 @@ dataSources:
         - name: SimpleBondingCurve
           file: ./abis/SimpleBondingCurve.json
       eventHandlers:
-        - event: LogMint(uint256,uint256)
-          handler: handleMintEvent
-        - event: LogWithdraw(uint256,uint256)
-          handler: handleWithdrawEvent
+        - event: LogTrade(string,uint256,uint256)
+          handler: handleLogTrade
       file: ./src/mapping.ts
