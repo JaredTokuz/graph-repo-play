@@ -1,6 +1,6 @@
-import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
 import { LogTrade } from "../../generated/SimpleBondingCurve/SimpleBondingCurve";
-import { newMockEvent } from "matchstick-as/assembly/index";
+import { newMockEvent, log, assert } from "matchstick-as/assembly/index";
 
 const validateSide = (side: string): string => {
   if (!["burn", "mint"].includes(side)) {
@@ -9,12 +9,26 @@ const validateSide = (side: string): string => {
   return side;
 };
 
+export const updateLogTradeMetaData = (
+  event: LogTrade,
+  hash: string,
+  nonce: string,
+  timestamp: string,
+  address: string
+): LogTrade => {
+  event.transaction.hash = Bytes.fromHexString(hash);
+  event.transaction.nonce = BigInt.fromString(nonce);
+  event.block.timestamp = BigInt.fromString(timestamp);
+  event.transaction.from = Address.fromString(address);
+  return event;
+};
+
 export function createNewLogTradeEvent(
   side: string,
-  weiAmt: BigInt,
-  erc20Amount: BigInt
+  weiAmt: i32,
+  erc20Amount: i32
 ): LogTrade {
-  let newLogTradeEvent = changetype<LogTrade>(newMockEvent());
+  const newLogTradeEvent: LogTrade = changetype<LogTrade>(newMockEvent());
   newLogTradeEvent.parameters = new Array();
 
   let sideParam = new ethereum.EventParam(
@@ -23,11 +37,11 @@ export function createNewLogTradeEvent(
   );
   let weiAmtParam = new ethereum.EventParam(
     "weiAmt",
-    ethereum.Value.fromUnsignedBigInt(weiAmt)
+    ethereum.Value.fromI32(weiAmt)
   );
   let erc20AmountParam = new ethereum.EventParam(
     "erc20Amount",
-    ethereum.Value.fromUnsignedBigInt(erc20Amount)
+    ethereum.Value.fromI32(erc20Amount)
   );
 
   newLogTradeEvent.parameters.push(sideParam);

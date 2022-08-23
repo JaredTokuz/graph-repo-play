@@ -52,14 +52,14 @@ function addressProfileEntity(event: LogTrade): void {
 export function latestTokenStateEntity(event: LogTrade): void {
   const id = "latest";
   let state = LatestTokenState.load(id);
-  log.info("hello? = {}", [state == null ? "asdf" : "b", "asdfasd"]);
   if (state == null) {
-    log.info("hello null = {}", [state == null ? "asdf" : "b"]);
     state = new LatestTokenState(id);
-    state.price = new BigInt(1);
-    log.info("hello null = {}", [state == null ? "asdf" : "b"]);
+    state.price = BigInt.fromString("1");
+    state.weiSpent = BigInt.fromString("0");
+    state.weiWithdrawn = BigInt.fromString("0");
+    state.noAddress = BigInt.fromString("0");
+    state.noTrades = BigInt.fromString("0");
   }
-  log.info("hello ok = {}", [state.id]);
 
   state.last_timestamp = event.block.timestamp;
   state.last_nonce = event.transaction.nonce;
@@ -75,10 +75,10 @@ export function latestTokenStateEntity(event: LogTrade): void {
   /** check this before the address profile entity is created */
   const profile = AddressProfile.load(event.transaction.from);
   if (profile == null) {
-    state.noAddress = state.noAddress.plus(new BigInt(1));
+    state.noAddress = state.noAddress.plus(BigInt.fromString("1"));
   }
 
-  state.noTrades = state.noTrades.plus(new BigInt(1));
+  state.noTrades = state.noTrades.plus(BigInt.fromString("1"));
 
   state.save();
 }
