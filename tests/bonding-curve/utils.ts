@@ -12,13 +12,13 @@ const validateSide = (side: string): string => {
 export const updateLogTradeMetaData = (
   event: LogTrade,
   hash: string,
-  nonce: string,
-  timestamp: string,
+  nonce: i32,
+  timestamp: i32,
   address: string
 ): LogTrade => {
   event.transaction.hash = Bytes.fromHexString(hash);
-  event.transaction.nonce = BigInt.fromString(nonce);
-  event.block.timestamp = BigInt.fromString(timestamp);
+  event.transaction.nonce = BigInt.fromI32(nonce);
+  event.block.timestamp = BigInt.fromI32(timestamp);
   event.transaction.from = Address.fromString(address);
   return event;
 };

@@ -18,7 +18,7 @@ const ADDRESS_PROFILE_ENTITY_TYPE = "AddressProfile";
 
 /** TODO run code coverage check */
 
-describe("handleLogTrade()", () => {
+describe("Lates Token State Entity", () => {
   afterEach(() => {
     clearStore();
   });
@@ -167,7 +167,7 @@ describe("handleLogTrade()", () => {
     );
 
     const anotherEvent = updateLogTradeMetaData(
-      createNewLogTradeEvent("burn", 50, 5),
+      createNewLogTradeEvent("mint", 50, 5),
       "0xsecond",
       2,
       456,
@@ -189,44 +189,4 @@ describe("handleLogTrade()", () => {
       "2"
     );
   });
-  /** TODO test address profile entity all fields */
-  test("Address Profiles are calculated correctly with the same address", () => {
-    const newEvent = updateLogTradeMetaData(
-      createNewLogTradeEvent("mint", 100, 9),
-      "0xfirst0",
-      1,
-      123,
-      "0xA16081F360e3847006dB660bae1c6d1b2e17eC2A"
-    );
-
-    const anotherEvent = updateLogTradeMetaData(
-      createNewLogTradeEvent("burn", 50, 5),
-      "0xsecond",
-      2,
-      456,
-      "0xA16081F360e3847006dB660bae1c6d1b2e17eC2A"
-    );
-
-    const anotherMintEvent = updateLogTradeMetaData(
-      createNewLogTradeEvent("mint", 150, 19),
-      "0xthird0",
-      3,
-      789,
-      "0xA16081F360e3847006dB660bae1c6d1b2e17eC2A"
-    );
-
-    const anotherBurnEvent = updateLogTradeMetaData(
-      createNewLogTradeEvent("burn", 70, 7),
-      "0xsecond",
-      4,
-      1012,
-      "0xA16081F360e3847006dB660bae1c6d1b2e17eC2A"
-    );
-  });
-
-  test("Address Profiles are calculated correctly with the different addresses", () => {});
-  /** TODO test token trade entity all fields */
 });
-/** test the address profile entity */
-
-/** test the latest token state entity */

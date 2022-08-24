@@ -19,15 +19,15 @@ type AddressProfile @entity(immutable: false) {
   erc20Purchased: BigInt!
   erc20Sold: BigInt!
   weiSpent: BigInt!
-  weiSold: BigInt!
+  weiReceived: BigInt!
   weiNetRealized: BigInt!
   noTrades: BigInt!
 }
 
 type LatestTokenState @entity(immutable: false) {
   id: String!
-  last_timestamp: BigInt!
-  last_nonce: BigInt!
+  lastTimestamp: BigInt!
+  lastNonce: BigInt!
   price: BigInt!
   weiSpent: BigInt!
   weiWithdrawn: BigInt!

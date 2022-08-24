@@ -7,12 +7,10 @@ import {
 import { log, BigInt, ethereum, Bytes } from "@graphprotocol/graph-ts";
 
 export function handleLogTrade(event: LogTrade): void {
-  /** latest state needs go first to check for new addresses */
-  latestTokenStateEntity(event);
+  /** latest state handles new addresses since it is dependant */
+  latestTokenStateAndAddressProfileEntity(event);
   /** token trade is immutable */
   tokenTradeEntity(event);
-  /** */
-  addressProfileEntity(event);
 }
 
 /**
@@ -20,7 +18,7 @@ export function handleLogTrade(event: LogTrade): void {
  * @param event
  * @param tradeType
  */
-function tokenTradeEntity(event: LogTrade): void {
+export function tokenTradeEntity(event: LogTrade): void {
   const tokenTrade = new TokenTrade(event.transaction.hash);
   tokenTrade.nonce = event.transaction.nonce;
   tokenTrade.erc20Amount = event.params.erc20Amt;
@@ -31,56 +29,88 @@ function tokenTradeEntity(event: LogTrade): void {
   tokenTrade.save();
 }
 
-function addressProfileEntity(event: LogTrade): void {
-  const id = event.transaction.from;
-  let profile = AddressProfile.load(id);
-  if (profile == null) {
-    profile = new AddressProfile(id);
-  }
-  if (event.params.side == "mint") {
-    profile.erc20Purchased = profile.erc20Purchased.plus(event.params.erc20Amt);
-    profile.weiSpent = profile.weiSpent.plus(event.params.weiAmt);
-  } else if (event.params.side == "burn") {
-    profile.erc20Sold = profile.erc20Sold.plus(event.params.erc20Amt);
-    profile.weiSold = profile.weiSold.plus(event.params.weiAmt);
-    profile.weiNetRealized = profile.weiSold.minus(profile.weiSpent);
-  }
-  profile.noTrades = profile.noTrades.plus(new BigInt(1));
-  profile.save();
-}
+/**
+ * handles the latest token state and address profile entity since they are dependant
+ * @param event
+ */
+export function latestTokenStateAndAddressProfileEntity(event: LogTrade): void {
+  function latestTokenStateEntity(event: LogTrade): void {
+    const id = "latest";
+    let state = LatestTokenState.load(id);
+    if (state == null) {
+      state = new LatestTokenState(id);
+      state.price = BigInt.fromString("1");
+      state.weiSpent = BigInt.fromString("0");
+      state.weiWithdrawn = BigInt.fromString("0");
+      state.noAddress = BigInt.fromString("0");
+      state.noTrades = BigInt.fromString("0");
+    }
 
-export function latestTokenStateEntity(event: LogTrade): void {
-  const id = "latest";
-  let state = LatestTokenState.load(id);
-  if (state == null) {
-    state = new LatestTokenState(id);
-    state.price = BigInt.fromString("1");
-    state.weiSpent = BigInt.fromString("0");
-    state.weiWithdrawn = BigInt.fromString("0");
-    state.noAddress = BigInt.fromString("0");
-    state.noTrades = BigInt.fromString("0");
-  }
+    state.lastTimestamp = event.block.timestamp;
+    state.lastNonce = event.transaction.nonce;
 
-  state.last_timestamp = event.block.timestamp;
-  state.last_nonce = event.transaction.nonce;
+    if (event.params.side == "mint") {
+      state.price = state.price.plus(event.params.erc20Amt);
+      state.weiSpent = state.weiSpent.plus(event.params.weiAmt);
+    } else if (event.params.side == "burn") {
+      state.price = state.price.minus(event.params.erc20Amt);
+      state.weiWithdrawn = state.weiWithdrawn.plus(event.params.weiAmt);
+    }
 
-  if (event.params.side == "mint") {
-    state.price = state.price.plus(event.params.erc20Amt);
-    state.weiSpent = state.weiSpent.plus(event.params.weiAmt);
-  } else if (event.params.side == "burn") {
-    state.price = state.price.minus(event.params.erc20Amt);
-    state.weiWithdrawn = state.weiWithdrawn.plus(event.params.weiAmt);
+    /** check this before the address profile entity is created */
+    const profile = AddressProfile.load(event.transaction.from);
+    if (profile == null) {
+      state.noAddress = state.noAddress.plus(BigInt.fromString("1"));
+    }
+
+    state.noTrades = state.noTrades.plus(BigInt.fromString("1"));
+
+    state.save();
   }
 
-  /** check this before the address profile entity is created */
-  const profile = AddressProfile.load(event.transaction.from);
-  if (profile == null) {
-    state.noAddress = state.noAddress.plus(BigInt.fromString("1"));
+  latestTokenStateEntity(event);
+
+  function addressProfileEntity(event: LogTrade): void {
+    const id = event.transaction.from;
+    let profile = AddressProfile.load(id);
+    if (profile == null) {
+      profile = new AddressProfile(id);
+      profile.address = event.transaction.from.toHexString();
+      profile.erc20Purchased = BigInt.fromI32(0);
+      profile.erc20Sold = BigInt.fromI32(0);
+      profile.weiSpent = BigInt.fromI32(0);
+      profile.weiReceived = BigInt.fromI32(0);
+      profile.weiNetRealized = BigInt.fromI32(0);
+      profile.noTrades = BigInt.fromI32(0);
+    }
+    if (event.params.side == "mint") {
+      profile.erc20Purchased = profile.erc20Purchased.plus(
+        event.params.erc20Amt
+      );
+      profile.weiSpent = profile.weiSpent.plus(event.params.weiAmt);
+    } else if (event.params.side == "burn") {
+      profile.erc20Sold = profile.erc20Sold.plus(event.params.erc20Amt);
+      profile.weiReceived = profile.weiReceived.plus(event.params.weiAmt);
+      /**
+       * avg wei per erc20 purchased = weispent / erc20purchased
+       * avg wei per erc20 sold = wei rec. / erc20 sold
+       * (avg sold - avg purchased) * sold total
+       * queries by block could be nice to go back in time
+       */
+      // log.info("fukkkk = {} {} {} {}", [
+      //   profile.weiSpent.toString(),
+      //   profile.erc20Purchased.toString(),
+      //   profile.weiReceived.toString(),
+      //   profile.erc20Sold.toString(),
+      // ]);
+      const avgPurch = profile.weiSpent.div(profile.erc20Purchased);
+      const avgSold = profile.weiReceived.div(profile.erc20Sold);
+      profile.weiNetRealized = avgSold.minus(avgPurch).times(profile.erc20Sold);
+    }
+    profile.noTrades = profile.noTrades.plus(BigInt.fromI32(1));
+    profile.save();
   }
-
-  state.noTrades = state.noTrades.plus(BigInt.fromString("1"));
-
-  state.save();
+  addressProfileEntity(event);
 }
 
 const logThings = (event: ethereum.Event): void => {
