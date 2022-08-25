@@ -1,9 +1,5 @@
 import { LogTrade } from "../generated/SimpleBondingCurve/SimpleBondingCurve";
-import {
-  TokenTrade,
-  AddressProfile,
-  LatestTokenState,
-} from "../generated/schema";
+import { TokenTrade, AddressProfile, LatestTokenState } from "../generated/schema";
 import { log, BigInt, ethereum, Bytes } from "@graphprotocol/graph-ts";
 
 export function handleLogTrade(event: LogTrade): void {
@@ -84,9 +80,7 @@ export function latestTokenStateAndAddressProfileEntity(event: LogTrade): void {
       profile.noTrades = BigInt.fromI32(0);
     }
     if (event.params.side == "mint") {
-      profile.erc20Purchased = profile.erc20Purchased.plus(
-        event.params.erc20Amt
-      );
+      profile.erc20Purchased = profile.erc20Purchased.plus(event.params.erc20Amt);
       profile.weiSpent = profile.weiSpent.plus(event.params.weiAmt);
     } else if (event.params.side == "burn") {
       profile.erc20Sold = profile.erc20Sold.plus(event.params.erc20Amt);
