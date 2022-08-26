@@ -1,11 +1,11 @@
 enum TradeType {
-  Mint
-  Burn
+  mint
+  burn
 }
 
 type TokenTrade @entity(immutable: true) {
   id: Bytes!
-  nonce: BigInt!
+  block: BigInt!
   erc20Amount: BigInt!
   ethAmount: BigInt!
   timestamp: BigInt!
@@ -27,7 +27,7 @@ type AddressProfile @entity(immutable: false) {
 type LatestTokenState @entity(immutable: false) {
   id: String!
   lastTimestamp: BigInt!
-  lastNonce: BigInt!
+  lastBlock: BigInt!
   price: BigInt!
   weiSpent: BigInt!
   weiWithdrawn: BigInt!

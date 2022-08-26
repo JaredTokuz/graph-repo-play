@@ -16,7 +16,7 @@ export function handleLogTrade(event: LogTrade): void {
  */
 export function tokenTradeEntity(event: LogTrade): void {
   const tokenTrade = new TokenTrade(event.transaction.hash);
-  tokenTrade.nonce = event.transaction.nonce;
+  tokenTrade.block = event.block.number;
   tokenTrade.erc20Amount = event.params.erc20Amt;
   tokenTrade.ethAmount = event.params.weiAmt;
   tokenTrade.tradeType = event.params.side;
@@ -43,7 +43,7 @@ export function latestTokenStateAndAddressProfileEntity(event: LogTrade): void {
     }
 
     state.lastTimestamp = event.block.timestamp;
-    state.lastNonce = event.transaction.nonce;
+    state.lastBlock = event.block.number;
 
     if (event.params.side == "mint") {
       state.price = state.price.plus(event.params.erc20Amt);
