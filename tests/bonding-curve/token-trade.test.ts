@@ -21,7 +21,7 @@ describe("Token Trade Entity generates correctly", () => {
 
     handleLogTrade(newEvent);
     assert.entityCount(TOKEN_TRADE_ENTITY_TYPE, 1);
-    assert.fieldEquals(TOKEN_TRADE_ENTITY_TYPE, transactionHash, "nonce", "1");
+    assert.fieldEquals(TOKEN_TRADE_ENTITY_TYPE, transactionHash, "block", "1");
     assert.fieldEquals(TOKEN_TRADE_ENTITY_TYPE, transactionHash, "erc20Amount", "9");
     assert.fieldEquals(TOKEN_TRADE_ENTITY_TYPE, transactionHash, "ethAmount", "100");
     assert.fieldEquals(TOKEN_TRADE_ENTITY_TYPE, transactionHash, "tradeType", "mint");
@@ -37,7 +37,7 @@ describe("Token Trade Entity generates correctly", () => {
 
     tokenTradeEntity(newEvent);
     assert.entityCount(TOKEN_TRADE_ENTITY_TYPE, 1);
-    assert.fieldEquals(TOKEN_TRADE_ENTITY_TYPE, transactionHash, "nonce", "1");
+    assert.fieldEquals(TOKEN_TRADE_ENTITY_TYPE, transactionHash, "block", "1");
     assert.fieldEquals(TOKEN_TRADE_ENTITY_TYPE, transactionHash, "erc20Amount", "9");
     assert.fieldEquals(TOKEN_TRADE_ENTITY_TYPE, transactionHash, "ethAmount", "100");
     assert.fieldEquals(TOKEN_TRADE_ENTITY_TYPE, transactionHash, "tradeType", "burn");

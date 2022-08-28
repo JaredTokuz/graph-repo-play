@@ -9,9 +9,9 @@ const validateSide = (side: string): string => {
   return side;
 };
 
-export const updateLogTradeMetaData = (event: LogTrade, hash: string, nonce: i32, timestamp: i32, address: string): LogTrade => {
+export const updateLogTradeMetaData = (event: LogTrade, hash: string, block: i32, timestamp: i32, address: string): LogTrade => {
   event.transaction.hash = Bytes.fromUTF8(hash);
-  event.transaction.nonce = BigInt.fromI32(nonce);
+  event.block.number = BigInt.fromI32(block);
   event.block.timestamp = BigInt.fromI32(timestamp);
   event.transaction.from = Address.fromString(address);
   return event;

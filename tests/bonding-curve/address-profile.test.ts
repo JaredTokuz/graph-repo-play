@@ -118,4 +118,18 @@ describe("Address Profile Entity genereates correctly", () => {
     assert.fieldEquals(ADDRESS_PROFILE_ENTITY_TYPE, _anotherAddress, "weiNetRealized", "21");
     assert.fieldEquals(ADDRESS_PROFILE_ENTITY_TYPE, _anotherAddress, "noTrades", "2");
   });
+
+  test("Address wei net realized can return negative numbers", () => {
+    const _address = "0xA16081F360e3847006dB660bae1c6d1b2e17eC2A".toLowerCase();
+
+    const newEvent = updateLogTradeMetaData(createNewLogTradeEvent("mint", 100, 9), "0xfirst0", 1, 123, _address);
+
+    const anotherEvent = updateLogTradeMetaData(createNewLogTradeEvent("burn", 50, 5), "0xsecond", 2, 456, _address);
+
+    latestTokenStateAndAddressProfileEntity(newEvent);
+    latestTokenStateAndAddressProfileEntity(anotherEvent);
+    assert.entityCount(ADDRESS_PROFILE_ENTITY_TYPE, 1);
+    logStore();
+    assert.fieldEquals(ADDRESS_PROFILE_ENTITY_TYPE, _address, "weiNetRealized", "-5");
+  });
 });

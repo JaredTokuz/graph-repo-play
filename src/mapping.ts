@@ -87,19 +87,12 @@ export function latestTokenStateAndAddressProfileEntity(event: LogTrade): void {
       profile.weiReceived = profile.weiReceived.plus(event.params.weiAmt);
       /**
        * avg wei per erc20 purchased = weispent / erc20purchased
-       * avg wei per erc20 sold = wei rec. / erc20 sold
-       * (avg sold - avg purchased) * sold total
+       * sold - (avg purchased * sold total)
        * queries by block could be nice to go back in time
        */
-      // log.info("fukkkk = {} {} {} {}", [
-      //   profile.weiSpent.toString(),
-      //   profile.erc20Purchased.toString(),
-      //   profile.weiReceived.toString(),
-      //   profile.erc20Sold.toString(),
-      // ]);
       const avgPurch = profile.weiSpent.div(profile.erc20Purchased);
-      const avgSold = profile.weiReceived.div(profile.erc20Sold);
-      profile.weiNetRealized = avgSold.minus(avgPurch).times(profile.erc20Sold);
+      profile.weiNetRealized = profile.weiReceived.minus(avgPurch.times(profile.erc20Sold));
+      // log.info("avg Purch {} {}", [profile.weiReceived.minus(avgPurch.times(profile.erc20Sold)).toString(), profile.weiNetRealized.toString()]);
     }
     profile.noTrades = profile.noTrades.plus(BigInt.fromI32(1));
     profile.save();

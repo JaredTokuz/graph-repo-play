@@ -23,7 +23,7 @@ describe("Lates Token State Entity", () => {
     latestTokenStateAndAddressProfileEntity(newEvent);
     assert.entityCount(LATEST_TOKEN_STATE_ENTITY_TYPE, 1);
     assert.fieldEquals(LATEST_TOKEN_STATE_ENTITY_TYPE, "latest", "lastTimestamp", "123");
-    assert.fieldEquals(LATEST_TOKEN_STATE_ENTITY_TYPE, "latest", "lastNonce", "1");
+    assert.fieldEquals(LATEST_TOKEN_STATE_ENTITY_TYPE, "latest", "lastBlock", "1");
     assert.fieldEquals(LATEST_TOKEN_STATE_ENTITY_TYPE, "latest", "price", "10");
     assert.fieldEquals(LATEST_TOKEN_STATE_ENTITY_TYPE, "latest", "weiSpent", "100");
     assert.fieldEquals(LATEST_TOKEN_STATE_ENTITY_TYPE, "latest", "weiWithdrawn", "0");
@@ -34,7 +34,7 @@ describe("Lates Token State Entity", () => {
     latestTokenStateAndAddressProfileEntity(anotherEvent);
     assert.entityCount(LATEST_TOKEN_STATE_ENTITY_TYPE, 1);
     assert.fieldEquals(LATEST_TOKEN_STATE_ENTITY_TYPE, "latest", "lastTimestamp", "456");
-    assert.fieldEquals(LATEST_TOKEN_STATE_ENTITY_TYPE, "latest", "lastNonce", "2");
+    assert.fieldEquals(LATEST_TOKEN_STATE_ENTITY_TYPE, "latest", "lastBlock", "2");
     assert.fieldEquals(LATEST_TOKEN_STATE_ENTITY_TYPE, "latest", "price", "5");
     assert.fieldEquals(LATEST_TOKEN_STATE_ENTITY_TYPE, "latest", "weiSpent", "100");
     assert.fieldEquals(LATEST_TOKEN_STATE_ENTITY_TYPE, "latest", "weiWithdrawn", "50");
