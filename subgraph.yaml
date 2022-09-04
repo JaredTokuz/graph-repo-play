@@ -1,6 +1,6 @@
 specVersion: 0.0.4
 description: Simple Bonding Curve showcase
-repository: https://github.com/JaredTokuz/nft-bonding-curve
+repository: https://github.com/JaredTokuz/graph-repo-play
 schema:
   file: ./schema.graphql
 dataSources:
